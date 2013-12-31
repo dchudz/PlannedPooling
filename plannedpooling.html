@@ -1,0 +1,171 @@
+<html>
+<head>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+        <script type="text/javascript" src="http://www.plannedpooling.com/media/jscolor.js"></script>
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+
+
+</head>
+
+<body>
+
+
+<a href="javascript: adjustNumStitchesRow(-5)">&lArr; 5 Stitches Shorter </a> &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+<a href="javascript: adjustNumStitchesRow(-1)">&larr; 1 Stitch Shorter </a> |
+<a href="javascript: adjustNumStitchesRow(1)"> 1 Stitch Longer &rarr;</a> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;
+<a href="javascript: adjustNumStitchesRow(5)"> 5 Stitches Longer &rArr;</a>
+
+<table>
+    <tr>
+        <td>
+            <div class="fieldWrapper">
+                <label for="id_stitches">Stitches in a row</label>:
+                <input type="text" value="12" id="numStitchesRow" />
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                <label>Color 1</label>:
+                <input id="color1" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="5DF4B6" />
+            </div>
+        </td>
+        <td>
+            <div>
+                <label>Stitches in color 1</label>:
+                <input type="text" value="2" id="numStitches1" />
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                <label>Color 2</label>:
+                <input id="color2" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="F4D2C3" />
+            </div>
+        </td>
+        <td>
+            <div>
+                <label>Stitches in color 2</label>:
+                <input type="text" value="5" id="numStitches2" />
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div>
+                <label>Type of knitting:</label>:
+                <select id="typeOfKnitting">
+                    <option value="flat" selected="selected">Flat (back and forth) knitting</option>
+                    <option value="circular">Circular (in the round) knitting</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="fieldWrapper">
+                <label for="id_number_colors_input">Number of colors to use</label>:
+                <input type="text" name="number_colors_input" value="3" id="id_number_colors_input" />
+            </div>
+        </td>
+    </tr>
+</table>
+
+<a href="#" onclick="draw()">Draw</a>
+
+
+<script>
+
+function adjustNumStitchesRow(n) {
+    $("#numStitchesRow").val(parseInt($("#numStitchesRow").val()) + n);
+    draw();
+}
+
+function chunkArray(array, chunk) {
+    var i,j;
+    var chunkList = [];
+    for (i=0,j=array.length; i<j; i+=chunk) {
+        chunkList.push(array.slice(i,i+chunk));
+    }
+    return chunkList;
+}
+
+function backAndForthIfy(array, rowLength) {
+    var chunkList = chunkArray(array, rowLength);
+    var newChunkList = d3.range(chunkList.length).map(function(i) {
+        if (i % 2 == 0) {return chunkList[i];}
+        else {return chunkList[i].reverse();}
+    })
+    return [].concat.apply([], newChunkList);
+}
+
+
+
+
+function rep(arr, count) {
+    var ln = arr.length;
+    var b = new Array();
+    for (i = 0; i < count; i++) {
+        b.push(arr[i % ln]);
+    }
+
+    return b;
+}
+
+//http://stackoverflow.com/questions/6798715/create-a-square-of-colors-with-jquery-or-javascript
+function draw() {
+    $(".drawing").remove()
+    var nColors = 2;
+
+    var bigWidthInPixels = 500;
+    var unitsWide = parseInt($("#numStitchesRow").val());
+    var unitsTall = unitsWide;
+
+    var totalSize = unitsWide * unitsTall;
+
+    var colorChoices = d3.range(1,nColors+1).map(function(i) {return "#" + $("#color"+i).val();})
+    var numStitchesChoices = [parseInt($("#numStitches1").val()), parseInt($("#numStitches2").val())];
+
+    var colorsList = d3.range(nColors).map(function(i) {return rep([colorChoices[i]], numStitchesChoices[i]);});
+    var colors = rep([].concat.apply([], colorsList), totalSize);
+    
+    if ($("#typeOfKnitting").val() == "flat") {
+        colors = backAndForthIfy(colors, unitsWide);
+    }
+
+
+    makeRectangles(colors, unitsWide, unitsTall, bigWidthInPixels);
+
+    return colors;
+};
+
+//for canvas: http://jsfiddle.net/dchudz/yJLuA/1/
+function makeRectangles(colors, unitsWide, unitsTall, bigWidthInPixels) {
+    var unitSizeInPixels = bigWidthInPixels/unitsWide;
+    var drawing = $('<div class="drawing"></div>').css({
+        overflow: 'hidden',
+        border: 'none',
+        width: bigWidthInPixels
+    });
+
+    for (var i = 0; i < unitsWide * unitsTall; i++) {
+        var randomColor = colors[i];
+        $('<span class="square"></span>').css({
+            display: 'block',
+            float: 'left',
+            width: unitSizeInPixels,
+            height: unitSizeInPixels,
+                'background-color': randomColor
+        }).appendTo(drawing);
+    }
+    drawing.appendTo($("body"));
+};
+
+$( document ).ready(draw);
+//$('input').change(draw);
+
+
+</script>
+
+</body>
+</html>
