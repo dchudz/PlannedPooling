@@ -71,8 +71,6 @@
     </tr>
 </table>
 
-<a href="#" onclick="draw()">Draw</a>
-
 <div id="canvasDiv"></div>
 
 <script>
@@ -140,27 +138,6 @@ function draw() {
     return colors;
 };
 
-//for canvas: http://jsfiddle.net/dchudz/yJLuA/1/
-function makeRectangles(colors, unitsWide, unitsTall, bigWidthInPixels) {
-    var unitSizeInPixels = bigWidthInPixels/unitsWide;
-    var drawing = $('<div class="drawing"></div>').css({
-        overflow: 'hidden',
-        border: 'none',
-        width: bigWidthInPixels
-    });
-
-    for (var i = 0; i < unitsWide * unitsTall; i++) {
-        var randomColor = colors[i];
-        $('<span class="square"></span>').css({
-            display: 'block',
-            float: 'left',
-            width: unitSizeInPixels,
-            height: unitSizeInPixels,
-                'background-color': randomColor
-        }).appendTo(drawing);
-    }
-    drawing.appendTo($("body"));
-};
 
 function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
     var unitSizeInPixels = bigWidthInPixels/unitsWide;
@@ -182,7 +159,7 @@ function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
 }
 
 $( document ).ready(draw);
-//$('input').change(draw);
+$('input').change(draw);
 
 
 </script>
