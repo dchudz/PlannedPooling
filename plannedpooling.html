@@ -73,6 +73,7 @@
 
 <a href="#" onclick="draw()">Draw</a>
 
+<div id="canvasDiv"></div>
 
 <script>
 
@@ -134,7 +135,7 @@ function draw() {
     }
 
 
-    makeRectangles(colors, unitsWide, unitsTall, bigWidthInPixels);
+    makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels);
 
     return colors;
 };
@@ -160,6 +161,25 @@ function makeRectangles(colors, unitsWide, unitsTall, bigWidthInPixels) {
     }
     drawing.appendTo($("body"));
 };
+
+function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
+    var unitSizeInPixels = bigWidthInPixels/unitsWide;
+    var canvas = document.createElement('canvas');
+    canvas.id = "canvas";
+    canvas.width = bigWidthInPixels;
+    canvas.height = bigWidthInPixels;
+    $("#canvasDiv").append(canvas);
+    var ctx = $("#canvas")[0].getContext('2d');
+
+    var colors2d = chunkArray(colors, unitsWide);
+
+    for (var i=0; i<unitsTall; i++){
+      for (var j=0; j<unitsWide; j++){
+        ctx.fillStyle = colors2d[i][j];
+        ctx.fillRect( j*unitSizeInPixels, i*unitSizeInPixels, unitSizeInPixels, unitSizeInPixels);
+      }
+    }
+}
 
 $( document ).ready(draw);
 //$('input').change(draw);
