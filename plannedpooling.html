@@ -24,7 +24,7 @@
             </div>
         </td>
     </tr>
-    <tr>
+    <tr id="trColor1">
         <td>
             <div>
                 <label>Color 1</label>:
@@ -38,7 +38,7 @@
             </div>
         </td>
     </tr>
-    <tr>
+    <tr id="trColor2">
         <td>
             <div>
                 <label>Color 2</label>:
@@ -52,6 +52,8 @@
             </div>
         </td>
     </tr>
+    <tr><td><a href="javascript: addAColor()">Add a color</a></td></tr>
+    <tr><td><a id="removeAColor" href="javascript: removeAColor()">Remove last color</a></td></tr>
     <tr>
         <td>
             <div>
@@ -60,12 +62,6 @@
                     <option value="flat" selected="selected">Flat (back and forth) knitting</option>
                     <option value="circular">Circular (in the round) knitting</option>
                 </select>
-            </div>
-        </td>
-        <td>
-            <div class="fieldWrapper">
-                <label for="id_number_colors_input">Number of colors to use</label>:
-                <input type="text" name="number_colors_input" value="3" id="id_number_colors_input" />
             </div>
         </td>
     </tr>
@@ -114,7 +110,6 @@ function rep(arr, count) {
 //http://stackoverflow.com/questions/6798715/create-a-square-of-colors-with-jquery-or-javascript
 function draw() {
     $(".drawing").remove()
-    var nColors = 2;
 
     var bigWidthInPixels = 500;
     var unitsWide = parseInt($("#numStitchesRow").val());
@@ -123,7 +118,7 @@ function draw() {
     var totalSize = unitsWide * unitsTall;
 
     var colorChoices = d3.range(1,nColors+1).map(function(i) {return "#" + $("#color"+i).val();})
-    var numStitchesChoices = [parseInt($("#numStitches1").val()), parseInt($("#numStitches2").val())];
+    var numStitchesChoices = d3.range(1,nColors+1).map(function(i) {return parseInt($("#numStitches" + i).val());})
 
     var colorsList = d3.range(nColors).map(function(i) {return rep([colorChoices[i]], numStitchesChoices[i]);});
     var colors = rep([].concat.apply([], colorsList), totalSize);
@@ -134,10 +129,7 @@ function draw() {
 
 
     makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels);
-
-    return colors;
 };
-
 
 function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
     var unitSizeInPixels = bigWidthInPixels/unitsWide;
@@ -153,13 +145,50 @@ function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
     for (var i=0; i<unitsTall; i++){
       for (var j=0; j<unitsWide; j++){
         ctx.fillStyle = colors2d[i][j];
-        ctx.fillRect( j*unitSizeInPixels, i*unitSizeInPixels, unitSizeInPixels, unitSizeInPixels);
+        ctx.strokeStyle = colors2d[i][j];
+
+        ctx.fillRect( j*unitSizeInPixels, i*unitSizeInPixels, unitSizeInPixels + .5, unitSizeInPixels + .5);
       }
     }
 }
 
+function removeAColor() {
+    $("#trColor" + nColors).remove();
+    nColors -= 1;
+    draw();
+    if (nColors==1) $("#removeAColor").removeAttr('href');
+}
+
+function addAColor() {
+    nColors += 1;
+    $( "#trColor" + (nColors-1) ).after( ' \
+    <tr id="trColor' + nColors + '">\
+        <td>\
+            <div>\
+                <label>Color ' + nColors + '</label>:\
+                <input id="color' + nColors + '" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="F4D2C3" />\
+            </div>\
+        </td>\
+        <td>\
+            <div>\
+                <label>Stitches in color ' + nColors + '</label>:\
+                <input type="text" value="5" id="numStitches' + nColors + '" />\
+            </div>\
+        </td>\
+    </tr>\
+        ' );
+    var col = new jscolor.color($("#color" + nColors)[0]);
+    draw();
+    $("#removeAColor").attr("href", "javascript: removeAColor()")
+    $('input').change(draw);
+
+}
+
+var nColors = 2;
+
 $( document ).ready(draw);
 $('input').change(draw);
+$('select').change(draw);
 
 
 </script>
