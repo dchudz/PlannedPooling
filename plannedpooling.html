@@ -14,7 +14,7 @@
 
 <style type="text/css">
 
-#page { margin:0px 10px 10px 10px; width: 30em;}
+#page { margin:0px 10px 10px 10px; width: 40em;}
 
 
 .topbar a:link    {color: #b0c4de; background: 555555}
@@ -95,6 +95,8 @@ Planned Pooling
 <a href="javascript: adjustNumStitchesRow(1)"> 1 Stitch Longer &rarr;</a> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;
 <a href="javascript: adjustNumStitchesRow(5)"> 5 Stitches Longer &rArr;</a>
 
+<p>If you want to save your picture, you can take a screenshot. (If you don't know how, search the web for how to take a screenshot in your operating system.) </p>
+
 <table>
     <tr>
         <td>
@@ -132,8 +134,8 @@ Planned Pooling
             </div>
         </td>
     </tr>
-    <tr><td><a href="javascript: addAColor()">Add a color</a></td></tr>
-    <tr><td><a id="removeAColor" href="javascript: removeAColor()">Remove last color</a></td></tr>
+    <tr><td><button onclick="addAColor();">Add a color</button>
+    <button id="removeAColor" onclick="removeAColor();">Remove a color</button></td></tr>
     <tr>
         <td>
             <div>
