@@ -111,34 +111,8 @@ Following the US presidential election on 11/8/2016, some people are taking the 
             </div>
         </td>
     </tr>
-    <tr id="trColor1">
-        <td>
-            <div>
-                <label>Color 1</label>:
-                <input id="color1" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="5DF4B6" />
-            </div>
-        </td>
-        <td>
-            <div>
-                <label>Stitches in color 1</label>:
-                <input type="text" value="2" id="numStitches1" />
-            </div>
-        </td>
-    </tr>
-    <tr id="trColor2">
-        <td>
-            <div>
-                <label>Color 2</label>:
-                <input id="color2" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="F4D2C3" />
-            </div>
-        </td>
-        <td>
-            <div>
-                <label>Stitches in color 2</label>:
-                <input type="text" value="5" id="numStitches2" />
-            </div>
-        </td>
-    </tr>
+    <div id="colorChooser">
+    </div>
     <tr><td><button onclick="addAColor();">Add a color</button>
     <button id="removeAColor" onclick="removeAColor();">Remove a color</button></td></tr>
     <tr>
@@ -198,6 +172,7 @@ function rep(arr, count) {
 
 //http://stackoverflow.com/questions/6798715/create-a-square-of-colors-with-jquery-or-javascript
 function draw() {
+    console.log("drrraw")
     $("#canvas").remove()
 
     var bigWidthInPixels = 500;
@@ -218,6 +193,7 @@ function draw() {
 
 
     makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels);
+    saveState()
 };
 
 function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
@@ -250,30 +226,53 @@ function removeAColor() {
 
 function addAColor() {
     nColors += 1;
-    $( "#trColor" + (nColors-1) ).after( ' \
-    <tr id="trColor' + nColors + '">\
+    addColorN(nColors)
+}
+
+function addColorN(n) {
+    $("#colorChooser").append( ' \
+    <tr id="trColor' + n + '">\
         <td>\
             <div>\
-                <label>Color ' + nColors + '</label>:\
-                <input id="color' + nColors + '" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="F4D2C3" />\
+                <label>Color ' + n + '</label>:\
+                <input id="color' + n + '" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="F4D2C3" />\
             </div>\
         </td>\
         <td>\
             <div>\
-                <label>Stitches in color ' + nColors + '</label>:\
-                <input type="text" value="5" id="numStitches' + nColors + '" />\
+                <label>Stitches in color ' + n + '</label>:\
+                <input type="text" value="5" id="numStitches' + n + '" />\
             </div>\
         </td>\
     </tr>\
         ' );
-    var col = new jscolor.color($("#color" + nColors)[0]);
+    console.log(nColors)
+    var col = new jscolor.color($("#color" + n)[0]);
     draw();
     $("#removeAColor").attr("href", "javascript: removeAColor()")
-    $('input').change(draw);
+    // $('input').change(draw);
 
 }
 
-var nColors = 2;
+function saveState() {
+    window.location.hash = JSON.stringify({nColors: nColors})
+}
+
+if (window.location.hash) {
+    state = JSON.parse(decodeURI(window.location.hash.slice(1)))
+} else {
+    state = {nColors: 2}
+}
+    
+var nColors = parseInt(state.nColors)
+
+for(var iii=0;iii<nColors;iii++){
+    console.log(iii);
+  addColorN(iii+1);
+  console.log(iii)
+}
+
+console.log("body")
 
 $( document ).ready(draw);
 $('input').change(draw);
