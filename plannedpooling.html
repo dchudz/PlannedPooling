@@ -177,14 +177,19 @@ function draw() {
 
     var bigWidthInPixels = 500;
     var unitsWide = parseInt($("#numStitchesRow").val());
+    state.unitsWide = unitsWide
     var unitsTall = unitsWide;
 
     var totalSize = unitsWide * unitsTall;
 
-    var colorChoices = d3.range(1,nColors+1).map(function(i) {return "#" + $("#color"+i).val();})
-    var numStitchesChoices = d3.range(1,nColors+1).map(function(i) {return parseInt($("#numStitches" + i).val());})
+    var colorChoices = d3.range(1,state.nColors+1).map(function(i) {return "#" + $("#color"+i).val();})
+    var numStitchesChoices = d3.range(1,state.nColors+1).map(function(i) {return parseInt($("#numStitches" + i).val());})
+    state.colorChoices = colorChoices
+    state.numStitchesChoices = numStitchesChoices
 
-    var colorsList = d3.range(nColors).map(function(i) {return rep([colorChoices[i]], numStitchesChoices[i]);});
+    var colorsList = d3.range(state.nColors).map(function(i) {return rep([colorChoices[i]], numStitchesChoices[i]);});
+    console.log(colorChoices)
+    console.log(numStitchesChoices)
     var colors = rep([].concat.apply([], colorsList), totalSize);
     
     if ($("#typeOfKnitting").val() == "flat") {
@@ -218,57 +223,63 @@ function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
 }
 
 function removeAColor() {
-    $("#trColor" + nColors).remove();
-    nColors -= 1;
+    $("#trColor" + state.nColors).remove();
+    state.nColors -= 1;
     draw();
-    if (nColors==1) $("#removeAColor").removeAttr('href');
+    if (state.nColors==1) $("#removeAColor").removeAttr('href');
 }
 
 function addAColor() {
-    nColors += 1;
-    addColorN(nColors)
+    state.nColors += 1;
+    addColorN(state.nColors, "F4D2C3", 5)
+    $('input').change(draw);
+    draw();
 }
 
-function addColorN(n) {
+function addColorN(n, color, numStitches) {
     $("#colorChooser").append( ' \
     <tr id="trColor' + n + '">\
         <td>\
             <div>\
                 <label>Color ' + n + '</label>:\
-                <input id="color' + n + '" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="F4D2C3" />\
+                <input id="color' + n + '" type="color {pickerPosition:&#39;right&#39;}" class="color {pickerPosition:&#39;right&#39;}" value="' + color + '" />\
             </div>\
         </td>\
         <td>\
             <div>\
                 <label>Stitches in color ' + n + '</label>:\
-                <input type="text" value="5" id="numStitches' + n + '" />\
+                <input type="text" value="' + numStitches + '" id="numStitches' + n + '" />\
             </div>\
         </td>\
     </tr>\
         ' );
-    console.log(nColors)
+    console.log(state.nColors)
     var col = new jscolor.color($("#color" + n)[0]);
-    draw();
     $("#removeAColor").attr("href", "javascript: removeAColor()")
     // $('input').change(draw);
 
 }
 
 function saveState() {
-    window.location.hash = JSON.stringify({nColors: nColors})
+    window.location.hash = JSON.stringify(state)
 }
 
 if (window.location.hash) {
     state = JSON.parse(decodeURI(window.location.hash.slice(1)))
+    console.log("from location")
 } else {
-    state = {nColors: 2}
+    state = {nColors: 2, colorChoices: ["#F1D1C3", "#A6F4C0"], numStitchesChoices: [19, 10], unitsWide: 18}
+    console.log("default")
+    console.log(state)
 }
-    
-var nColors = parseInt(state.nColors)
+console.log(state)
 
-for(var iii=0;iii<nColors;iii++){
+$("#numStitchesRow").val(state.unitsWide)
+   
+for(var iii=0;iii<state.nColors;iii++){
     console.log(iii);
-  addColorN(iii+1);
+    console.log(state.colorChoices[iii])
+  addColorN(iii+1, state.colorChoices[iii], state.numStitchesChoices[iii]);
   console.log(iii)
 }
 
@@ -277,7 +288,6 @@ console.log("body")
 $( document ).ready(draw);
 $('input').change(draw);
 $('select').change(draw);
-
 
 </script>
 
