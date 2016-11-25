@@ -128,7 +128,7 @@ Following the US presidential election on 11/8/2016, some people are taking the 
     </tr>
 </table>
 
-<div id="canvasDiv"></div>
+<div id="canvasDiv">hi</div>
 
     <p>plannedpooling@gmail.com.</p>
 
@@ -196,12 +196,12 @@ function draw() {
         colors = backAndForthIfy(colors, unitsWide);
     }
 
-
-    makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels);
     saveState()
+    makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels);
 };
 
 function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
+    console.log("makeRectanglesCanvas start")
     var unitSizeInPixels = bigWidthInPixels/unitsWide;
     var canvas = document.createElement('canvas');
     canvas.id = "canvas";
@@ -220,6 +220,7 @@ function makeRectanglesCanvas(colors, unitsWide, unitsTall, bigWidthInPixels) {
         ctx.fillRect( j*unitSizeInPixels, i*unitSizeInPixels, unitSizeInPixels + .5, unitSizeInPixels + .5);
       }
     }
+    console.log("makeRectanglesCanvas end")
 }
 
 function removeAColor() {
@@ -256,7 +257,7 @@ function addColorN(n, color, numStitches) {
     console.log(state.nColors)
     var col = new jscolor.color($("#color" + n)[0]);
     $("#removeAColor").attr("href", "javascript: removeAColor()")
-    // $('input').change(draw);
+    $('input').change(draw);
 
 }
 
@@ -288,6 +289,10 @@ console.log("body")
 $( document ).ready(draw);
 $('input').change(draw);
 $('select').change(draw);
+
+setTimeout(draw, 10) // hack: in Chrome the imnage wasn't showing on initial page load until double clicking or scrolling. this seems to fix
+
+console.log("dddd")
 
 </script>
 
