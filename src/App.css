@@ -1,0 +1,79 @@
+.navbar a {
+    text-decoration: none;
+    margin: 10px;
+    font-family: sans-serif;
+}
+
+.navbar a:link,
+.navbar a:visited {
+    color: #b0c4de;
+}
+
+.navbar a:active,
+.navbar a:hover {
+    color: black;
+    background: #b0c4de;
+}
+
+.navbar {
+    margin-left: 0;
+    margin-bottom: 0;
+    margin-top: 0;
+    text-decoration: none;
+    text-align: left;
+    border: 0;
+    width: 100%;
+    border-spacing: 0;
+    padding: 0;
+    background-color: #000000;
+}
+
+body {
+    margin: 0;
+    background-color: #ffffff;
+}
+
+#long {
+    width: 100%
+}
+
+.titlebar {
+    border: 0;
+    width: 100%;
+    border-spacing: 0;
+    padding: 0;
+    background-color: #BF5FFF;
+    text-align: right;
+    margin: 0 10px 0 0;
+    font-family: impact, sans-serif;
+    font-size: x-large;
+}
+
+
+.save {
+    text-align: right;
+}
+
+.canvasContainer {
+    width: 500px;
+}
+
+.choicesSection {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+#pooler {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+#typeLabel {
+    vertical-align: top;
+    display: inline-block;
+}
+
+#typeChoicesContainer {
+    display: inline-block;
+    margin-left: 10px;
+}
