@@ -131,6 +131,7 @@ Resources:
                   - "logs:CreateLogGroup"
                   - "logs:CreateLogStream"
                   - "logs:PutLogEvents"
+                  - "cloudfront:CreateInvalidation"
                 Resource:
                   - "*"
   CodePipeLineRole:
@@ -199,6 +200,7 @@ Resources:
                 - aws s3 cp --recursive --acl public-read ./build s3://${S3Bucket}/
                 - aws s3 cp --acl public-read --cache-control="max-age=0, no-cache, no-store, must-revalidate" ./build/service-worker.js s3://${S3Bucket}/
                 - aws s3 cp --acl public-read --cache-control="max-age=0, no-cache, no-store, must-revalidate" ./build/index.html s3://${S3Bucket}/
+                - aws cloudfront create-invalidation --distribution-id ${Distribution} --paths /index.html /service-worker.js
           artifacts:
             files:
               - '**/*'
@@ -206,7 +208,25 @@ Resources:
   PipelineBucket:
     Type: 'AWS::S3::Bucket'
     Properties: {}
-
+  Distribution:
+    Type: "AWS::CloudFront::Distribution"
+    Properties:
+      DistributionConfig:
+        Origins:
+          -
+            DomainName: !GetAtt S3Bucket.DomainName
+            Id: !Ref S3Bucket
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+        DefaultRootObject: index.html
+        Enabled: true
+        DefaultCacheBehavior:
+          MinTTL: 86400
+          MaxTTL: 31536000
+          ForwardedValues:
+            QueryString: true
+          TargetOriginId: !Ref S3Bucket
+          ViewerProtocolPolicy: "redirect-to-https"
 
 Outputs:
   WebsiteURL:
