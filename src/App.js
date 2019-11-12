@@ -159,7 +159,7 @@ const newRandomColor = () => (
 
 const LengthController = (props) => (
   <div>
-    <div>
+    <div className="lengthButtonsContainer">
       <button disabled={props.numStitches <= 6} onClick={props.addStitches(-5)}>5 Stitches Shorter</button>
       <button disabled={props.numStitches <= 1} onClick={props.addStitches(-1)}>1 Stitch Shorter</button>
       <button onClick={props.addStitches(1)}>1 Stitch Longer</button>
