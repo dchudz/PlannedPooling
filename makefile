@@ -2,10 +2,10 @@ DIR=$(shell pwd)
 STACK=plannedpooling
 
 create:
-	aws cloudformation create-stack --stack-name $(STACK) --template-body file:///$(DIR)/cloudformation.yaml
+	aws cloudformation create-stack --stack-name $(STACK) --template-body file:///$(DIR)/cloudformation.yaml --parameters ParameterKey=GithubOAuthToken,ParameterValue=${GITHUB_TOKEN} --capabilities CAPABILITY_IAM
 
 update:
-	aws cloudformation update-stack --stack-name $(STACK) --template-body file:///$(DIR)/cloudformation.yaml
+	aws cloudformation update-stack --stack-name $(STACK) --template-body file:///$(DIR)/cloudformation.yaml --parameters ParameterKey=GithubOAuthToken,ParameterValue=${GITHUB_TOKEN} --capabilities CAPABILITY_IAM
 
 .build:
 	npm run build
@@ -16,3 +16,6 @@ upload: .build
 
 info:
 	aws cloudformation describe-stacks --stack-name $(STACK) --query "Stacks[].Outputs" --output text
+
+hi:
+	echo ${A}
