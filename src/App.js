@@ -167,7 +167,7 @@ const LengthController = (props) => (
     </div>
     <div className="choicesSection">
       <label htmlFor="id_stitches">Stitches in a row</label>:
-      <input type="text" value={props.numStitches} id="numStitchesRow"/>
+      <input type="text" value={props.numStitches} onChange={e => props.setStitches(+e.target.value)} id="numStitchesRow"/>
     </div>
   </div>
 );
@@ -205,7 +205,7 @@ const Pooler_ = (props) => {
 
   return (
     <div id="pooler">
-      <LengthController addStitches={addStitches} numStitches={numStitches}/>
+      <LengthController setStitches={setNumStitches} addStitches={addStitches} numStitches={numStitches}/>
       <ColorChoosers colors={colors} stitchCounts={stitchCounts} setColors={setColors}
                      setStitchCounts={setStitchCounts}/>
       <div>
