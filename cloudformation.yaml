@@ -9,7 +9,7 @@ Parameters:
     Default: dchudz
   GithubRepo:
     Type: String
-    Default: cloudformation_ci_example
+    Default: PlannedPooling
   GithubOAuthToken:
     Type: String
     Description: "Github personal access token"
