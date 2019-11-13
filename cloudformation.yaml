@@ -1,9 +1,5 @@
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
-  ProjectSource:
-    Type: String
-    Default: "https://github.com/dchudz/PlannedPooling"
-    Description: "Source control URL (e.g. Github)"
   GithubOwner:
     Type: String
     Default: dchudz
@@ -15,6 +11,7 @@ Parameters:
     Description: "Github personal access token"
 
 Resources:
+
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -208,10 +205,23 @@ Resources:
   PipelineBucket:
     Type: 'AWS::S3::Bucket'
     Properties: {}
+  LogsBucket:
+    Type: AWS::S3::Bucket
+    Properties: {}
   Distribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
       DistributionConfig:
+        Aliases:
+          - hi.plannedpooling.com
+          - www.plannedpooling.com
+          - plannedpooling.com
+        ViewerCertificate:
+          AcmCertificateArn: arn:aws:acm:us-east-1:121866893048:certificate/483975ca-686b-4925-9f0f-8bca30841ecb,
+        Logging:
+          IncludeCookies: 'false'
+          Bucket: !GetAtt LogsBucket.DomainName
+          Prefix: cloudfront
         Origins:
           -
             DomainName: !GetAtt S3Bucket.DomainName
@@ -245,3 +255,6 @@ Outputs:
           - S3Bucket
           - DomainName
     Description: Name of S3 bucket to hold website content
+  LogsBucket:
+    Value: !Ref 'LogsBucket'
+    Description: logs bucket
