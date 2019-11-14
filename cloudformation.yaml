@@ -208,6 +208,17 @@ Resources:
   LogsBucket:
     Type: AWS::S3::Bucket
     Properties: {}
+  WebsiteDNSName:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: plannedpooling.com.
+      Comment: CNAME redirect custom name to CloudFront distribution
+      Name: !Join ['', [!Ref 'AWS::StackName', !Ref 'AWS::AccountId', ., !Ref 'AWS::Region',
+          ., 'plannedpooling.com']]
+      Type: CNAME
+      TTL: '900'
+      ResourceRecords:
+      - !GetAtt [Distribution, DomainName]
   Distribution:
     Type: "AWS::CloudFront::Distribution"
     Properties:
@@ -217,7 +228,8 @@ Resources:
           - www.plannedpooling.com
           - plannedpooling.com
         ViewerCertificate:
-          AcmCertificateArn: arn:aws:acm:us-east-1:121866893048:certificate/483975ca-686b-4925-9f0f-8bca30841ecb,
+          AcmCertificateArn: arn:aws:acm:us-east-1:121866893048:certificate/483975ca-686b-4925-9f0f-8bca30841ecb
+          SslSupportMethod: sni-only
         Logging:
           IncludeCookies: 'false'
           Bucket: !GetAtt LogsBucket.DomainName
