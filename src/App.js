@@ -178,9 +178,9 @@ const Pooler_ = (props) => {
     stateFromUrl = JSON.parse(decodeURI(window.location.hash.slice(1)));
   }
 
-  const [numStitches, setNumStitches] = useState(stateFromUrl.unitsWide || 12);
+  const [numStitches, setNumStitches] = useState(stateFromUrl.unitsWide || 51);
   const [colors, setColors] = useState(
-    (stateFromUrl.colorChoices && stateFromUrl.colorChoices.map(s => s.replace('#', ''))) || ["BF5FFF", "b0c4de"])
+    (stateFromUrl.colorChoices && stateFromUrl.colorChoices.map(s => s.replace('#', ''))) || ["BF5FFF", "2A1DDE"])
   const [stitchCounts, setStitchCounts] = useState(stateFromUrl.numStitchesChoices || [4, 9])
   const [type, setType] = useState(stateFromUrl.type || 'flat')
 
