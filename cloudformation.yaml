@@ -7,11 +7,13 @@ Parameters:
     Type: String
     Default: PlannedPooling
   GithubOAuthToken:
+    NoEcho: true
     Type: String
     Description: "Github personal access token"
 
+Conditions:
+  CreateProdResources: !Equals [ !Ref "AWS::StackName" , plannedpooling]
 Resources:
-
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -39,7 +41,7 @@ Resources:
 
 
   CodePipeline:
-    Type: 'AWS::CodePipeline::Pipeline'
+    Type: AWS::CodePipeline::Pipeline
     Properties:
       RoleArn: !GetAtt CodePipeLineRole.Arn
       ArtifactStore:
@@ -173,8 +175,6 @@ Resources:
       Artifacts:
         Type: CODEPIPELINE
         Name: MyProject
-      Source:
-        Type: CODEPIPELINE
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
         Type: LINUX_CONTAINER
@@ -206,9 +206,11 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties: {}
   LogsBucket:
+    Condition: CreateProdResources
     Type: AWS::S3::Bucket
     Properties: {}
   WebsiteDNSNameRoot:
+    Condition: CreateProdResources
     Type: AWS::Route53::RecordSet
     Properties:
       Type: A
@@ -219,6 +221,7 @@ Resources:
         DNSName: !GetAtt [Distribution, DomainName]
   WebsiteDNSName:
     Type: AWS::Route53::RecordSet
+    Condition: CreateProdResources
     Properties:
       HostedZoneName: plannedpooling.com.
       Comment: CNAME redirect custom name to CloudFront distribution
@@ -230,6 +233,7 @@ Resources:
       - !GetAtt [Distribution, DomainName]
   WebsiteDNSNameHi:
     Type: AWS::Route53::RecordSet
+    Condition: CreateProdResources
     Properties:
       HostedZoneName: plannedpooling.com.
       Comment: CNAME redirect custom name to CloudFront distribution
@@ -239,6 +243,7 @@ Resources:
       ResourceRecords:
       - !GetAtt [Distribution, DomainName]
   WebsiteDNSNameWww:
+    Condition: CreateProdResources
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: plannedpooling.com.
@@ -250,6 +255,7 @@ Resources:
       - !GetAtt [Distribution, DomainName]
   Distribution:
     Type: "AWS::CloudFront::Distribution"
+    Condition: CreateProdResources
     Properties:
       DistributionConfig:
         Aliases:
@@ -280,6 +286,8 @@ Resources:
           ViewerProtocolPolicy: "redirect-to-https"
 
 Outputs:
+  StackName:
+    Value: AWS::StackName
   WebsiteURL:
     Value: !GetAtt
       - S3Bucket
