@@ -208,6 +208,15 @@ Resources:
   LogsBucket:
     Type: AWS::S3::Bucket
     Properties: {}
+  WebsiteDNSNameRoot:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      Type: A
+      HostedZoneName: plannedpooling.com.
+      Name: plannedpooling.com.
+      AliasTarget:
+        HostedZoneId: Z2FDTNDATAQYW2
+        DNSName: !GetAtt [Distribution, DomainName]
   WebsiteDNSName:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -215,6 +224,26 @@ Resources:
       Comment: CNAME redirect custom name to CloudFront distribution
       Name: !Join ['', [!Ref 'AWS::StackName', !Ref 'AWS::AccountId', ., !Ref 'AWS::Region',
           ., 'plannedpooling.com']]
+      Type: CNAME
+      TTL: '900'
+      ResourceRecords:
+      - !GetAtt [Distribution, DomainName]
+  WebsiteDNSNameHi:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: plannedpooling.com.
+      Comment: CNAME redirect custom name to CloudFront distribution
+      Name: hi.plannedpooling.com
+      Type: CNAME
+      TTL: '900'
+      ResourceRecords:
+      - !GetAtt [Distribution, DomainName]
+  WebsiteDNSNameWww:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: plannedpooling.com.
+      Comment: CNAME redirect custom name to CloudFront distribution
+      Name: www.plannedpooling.com
       Type: CNAME
       TTL: '900'
       ResourceRecords:
