@@ -225,7 +225,7 @@ Resources:
     Condition: CreateProdResources
     Type: 'AWS::CodeBuild::Project'
     Properties:
-      Name: !Sub ${AWS::StackName}-CodeBuild
+      Name: !Sub ${AWS::StackName}-InvalidationCloudFront
       ServiceRole: !GetAtt CodeBuildRole.Arn
       Artifacts:
         Type: no_artifacts
