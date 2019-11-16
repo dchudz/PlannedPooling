@@ -90,6 +90,20 @@ Resources:
                   Name: MyAppBuild
               Configuration:
                 ProjectName: !Ref CodeBuild
+        - !If
+          - CreateProdResources
+          - InputArtifacts: []
+            Name: InvalidateCloudfront
+            ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Version: 1
+                Provider: CodeBuild
+            OutputArtifacts: []
+            Configuration:
+              ProjectName: !Ref InvalidationCloudFront
+            RunOrder: 3
+          - !Ref AWS::NoValue
   CodeBuildRole:
     Type: AWS::IAM::Role
     Properties:
@@ -203,11 +217,36 @@ Resources:
                 - aws s3 cp --recursive --acl public-read ./build s3://${S3Bucket}/
                 - aws s3 cp --acl public-read --cache-control="max-age=0, no-cache, no-store, must-revalidate" ./build/service-worker.js s3://${S3Bucket}/
                 - aws s3 cp --acl public-read --cache-control="max-age=0, no-cache, no-store, must-revalidate" ./build/index.html s3://${S3Bucket}/
-                - aws cloudfront create-invalidation --distribution-id ${Distribution} --paths /index.html /service-worker.js
           artifacts:
             files:
               - '**/*'
             base-directory: build
+  InvalidationCloudFront:
+    Condition: CreateProdResources
+    Type: 'AWS::CodeBuild::Project'
+    Properties:
+      Name: !Sub ${AWS::StackName}-CodeBuild
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Artifacts:
+        Type: no_artifacts
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Type: LINUX_CONTAINER
+        Image: "aws/codebuild/nodejs:8.11.0"
+      Source:
+        Type: NO_SOURCE
+        BuildSpec: !Sub |
+          version: 0.1
+          phases:
+            pre_build:
+              commands:
+                - echo 'in prebuild'
+            build:
+              commands:
+                - echo Build started on `date`
+            post_build:
+              commands:
+                - aws cloudfront create-invalidation --distribution-id ${Distribution} --paths /index.html /service-worker.js
   PipelineBucket:
     Type: 'AWS::S3::Bucket'
     Properties: {}
@@ -310,6 +349,3 @@ Outputs:
           - S3Bucket
           - DomainName
     Description: Name of S3 bucket to hold website content
-  LogsBucket:
-    Value: !Ref 'LogsBucket'
-    Description: logs bucket

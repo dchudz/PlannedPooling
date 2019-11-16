@@ -1,5 +1,9 @@
 DIR=$(shell pwd)
 
+ifndef STACK
+    $(error STACK is undefined)
+endif
+
 allcommitted:
 	bin/allcommitted
 
@@ -13,7 +17,7 @@ update:
 	npm run build
 
 changeset: allcommitted
-	$(eval COMMIT := $(git rev-parse HEAD))
+	$(eval COMMIT := $(shell git rev-parse HEAD))
 	aws cloudformation create-change-set --stack-name $(STACK) --template-body file:///$(DIR)/cloudformation.yaml --parameters ParameterKey=GithubOAuthToken,ParameterValue=${GITHUB_TOKEN} --capabilities CAPABILITY_IAM --change-set-name $(COMMIT)
 
 upload: .build
@@ -24,4 +28,4 @@ info:
 	aws cloudformation describe-stacks --stack-name $(STACK) --query "Stacks[].Outputs" --output text
 
 hi:
-	echo ${A}
+	echo ${STACK}
