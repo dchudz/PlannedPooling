@@ -15,7 +15,7 @@ const Top = (props) => {
   return (
     <div className="top">
       <div className="titlebar">
-        Planned Pooling
+        Planned Pooling (Staging)
       </div>
       <div className="navbar">
         <Link to="/">the app</Link>
