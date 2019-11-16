@@ -90,20 +90,21 @@ Resources:
                   Name: MyAppBuild
               Configuration:
                 ProjectName: !Ref CodeBuild
-        - !If
-          - CreateProdResources
-          - InputArtifacts: []
-            Name: InvalidateCloudfront
-            ActionTypeId:
-                Category: Build
-                Owner: AWS
-                Version: 1
-                Provider: CodeBuild
-            OutputArtifacts: []
-            Configuration:
-              ProjectName: !Ref InvalidationCloudFront
-            RunOrder: 3
-          - !Ref AWS::NoValue
+            - !If
+              - CreateProdResources
+              - InputArtifacts:
+                  - Name: MyApp
+                Name: InvalidateCloudfront
+                ActionTypeId:
+                    Category: Build
+                    Owner: AWS
+                    Version: 1
+                    Provider: CodeBuild
+                OutputArtifacts: []
+                Configuration:
+                  ProjectName: !Ref InvalidationCloudFront
+                RunOrder: 3
+              - !Ref AWS::NoValue
   CodeBuildRole:
     Type: AWS::IAM::Role
     Properties:
