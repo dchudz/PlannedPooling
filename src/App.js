@@ -230,7 +230,9 @@ const Pooler_ = (props) => {
 
       <ColoredSquare
         colors={colors}
-        numStitches={numStitches}
+        numStitchesWide={numStitches}
+        numStitchesTall={102}
+        customizeStitchesTall={true}
         stitchCounts={stitchCounts}
         type={type}/>
       <p>
