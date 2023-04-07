@@ -171,6 +171,10 @@ const LengthController = (props) => (
           <input type="text" value={props.numStitches} onChange={e => props.setStitches(+e.target.value)} id="numStitchesRow"/>
       </div>
       <div>
+          <label htmlFor="id_square_pattern">Square pattern?</label>
+          <input type="checkbox" checked={props.squarePattern} onChange={e => props.setSquarePattern(!props.squarePattern)} id="squarePattern"/>
+      </div>
+      <div>
           <label htmlFor="id_stitches_tall">Custom number of rows</label>:
           <input type="text" value={props.numStitchesTall} onChange={e => props.setStitchesTall(+e.target.value)} id="numStitchesTall"/>
       </div>
@@ -185,6 +189,7 @@ const Pooler_ = (props) => {
   }
 
   const [numStitches, setNumStitches] = useState(stateFromUrl.unitsWide || 51);
+  const [squarePattern, setBoolSquarePattern] = useState(Boolean(stateFromUrl.squarePattern));
   const [numStitchesTall, setNumStitchesTall] = useState(stateFromUrl.unitsTall || 51);
   const [colors, setColors] = useState(
     (stateFromUrl.colorChoices && stateFromUrl.colorChoices.map(s => s.replace('#', ''))) || ["BF5FFF", "2A1DDE"])
@@ -198,6 +203,7 @@ const Pooler_ = (props) => {
     "colorChoices": colors.map(s => '#' + s),  // add hashes to match old format
     "numStitchesChoices": stitchCounts,
     "unitsWide": numStitches,
+    "squarePattern": squarePattern,
     "unitsTall": numStitchesTall,
     "type": type
   };
@@ -219,6 +225,8 @@ const Pooler_ = (props) => {
         addStitches={addStitches} 
         numStitches={numStitches}
         numStitchesTall={numStitchesTall}
+        squarePattern={squarePattern}
+        setSquarePattern={setBoolSquarePattern}
         />
       <ColorChoosers 
         colors={colors} 
@@ -249,7 +257,7 @@ const Pooler_ = (props) => {
         colors={colors}
         numStitchesWide={numStitches}
         numStitchesTall={numStitchesTall}
-        customizeStitchesTall={true}
+        customizeStitchesTall={!squarePattern}
         stitchCounts={stitchCounts}
         type={type}/>
       <p>
