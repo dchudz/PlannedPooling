@@ -166,8 +166,14 @@ const LengthController = (props) => (
       <button onClick={props.addStitches(5)}>5 Stitches Longer</button>
     </div>
     <div className="choicesSection">
-      <label htmlFor="id_stitches">Stitches in a row</label>:
-      <input type="text" value={props.numStitches} onChange={e => props.setStitches(+e.target.value)} id="numStitchesRow"/>
+      <div>
+          <label htmlFor="id_stitches">Stitches in a row</label>:
+          <input type="text" value={props.numStitches} onChange={e => props.setStitches(+e.target.value)} id="numStitchesRow"/>
+      </div>
+      <div>
+          <label htmlFor="id_stitches_tall">Custom number of rows</label>:
+          <input type="text" value={props.numStitchesTall} onChange={e => props.setStitchesTall(+e.target.value)} id="numStitchesTall"/>
+      </div>
     </div>
   </div>
 );
@@ -179,6 +185,7 @@ const Pooler_ = (props) => {
   }
 
   const [numStitches, setNumStitches] = useState(stateFromUrl.unitsWide || 51);
+  const [numStitchesTall, setNumStitchesTall] = useState(stateFromUrl.unitsTall || 51);
   const [colors, setColors] = useState(
     (stateFromUrl.colorChoices && stateFromUrl.colorChoices.map(s => s.replace('#', ''))) || ["BF5FFF", "2A1DDE"])
   const [stitchCounts, setStitchCounts] = useState(stateFromUrl.numStitchesChoices || [4, 9])
@@ -191,6 +198,7 @@ const Pooler_ = (props) => {
     "colorChoices": colors.map(s => '#' + s),  // add hashes to match old format
     "numStitchesChoices": stitchCounts,
     "unitsWide": numStitches,
+    "unitsTall": numStitchesTall,
     "type": type
   };
   console.log(state)
@@ -205,9 +213,18 @@ const Pooler_ = (props) => {
 
   return (
     <div id="pooler">
-      <LengthController setStitches={setNumStitches} addStitches={addStitches} numStitches={numStitches}/>
-      <ColorChoosers colors={colors} stitchCounts={stitchCounts} setColors={setColors}
-                     setStitchCounts={setStitchCounts}/>
+      <LengthController 
+        setStitches={setNumStitches} 
+        setStitchesTall={setNumStitchesTall}
+        addStitches={addStitches} 
+        numStitches={numStitches}
+        numStitchesTall={numStitchesTall}
+        />
+      <ColorChoosers 
+        colors={colors} 
+        stitchCounts={stitchCounts} 
+        setColors={setColors}
+        setStitchCounts={setStitchCounts}/>
       <div>
         <label id="typeLabel">Type of knitting:</label>
         <div id="typeChoicesContainer">
@@ -231,7 +248,7 @@ const Pooler_ = (props) => {
       <ColoredSquare
         colors={colors}
         numStitchesWide={numStitches}
-        numStitchesTall={102}
+        numStitchesTall={numStitchesTall}
         customizeStitchesTall={true}
         stitchCounts={stitchCounts}
         type={type}/>
