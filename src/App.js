@@ -31,8 +31,8 @@ const About = (props) => (
     <h1>About</h1>
     <p>
       <h2>What this is:</h2>
-      Sometimes knitters knit with yarn that has a repeating sequence of colors. Depending on the sequence
-      (and how many stitches of each color) and the shape of the object being created (on this site, I'm simulating a square
+      Sometimes knitters knit with yarn that has a repeating sequence of colors. Depending on the sequence of colors
+      (and how many stitches of each) and the shape of the object being created (on this site, I'm simulating a square
       that's a certain number of stitches across), the colors can come out in different patterns. <em>Pooling</em> is
       when colors clump together forming 'pools' of the same color, but many different types of patterns can arise. This
       site should help you explore the possibilities, and perhaps help you plan a desired look.
@@ -166,8 +166,18 @@ const LengthController = (props) => (
       <button onClick={props.addStitches(5)}>5 Stitches Longer</button>
     </div>
     <div className="choicesSection">
-      <label htmlFor="id_stitches">Stitches in a row</label>:
-      <input type="text" value={props.numStitches} onChange={e => props.setStitches(+e.target.value)} id="numStitchesRow"/>
+      <div>
+          <label htmlFor="id_stitches">Stitches in a row</label>:
+          <input type="text" value={props.numStitches} onChange={e => props.setStitches(+e.target.value)} id="numStitchesRow"/>
+      </div>
+      <div>
+          <label htmlFor="id_square_pattern">Square pattern?</label>
+          <input type="checkbox" checked={props.squarePattern} onChange={e => props.setSquarePattern(!props.squarePattern)} id="squarePattern"/>
+      </div>
+      <div>
+          <label htmlFor="id_stitches_tall">Custom number of rows</label>:
+          <input type="text" value={props.numStitchesTall} onChange={e => props.setStitchesTall(+e.target.value)} id="numStitchesTall"/>
+      </div>
     </div>
   </div>
 );
@@ -179,6 +189,8 @@ const Pooler_ = (props) => {
   }
 
   const [numStitches, setNumStitches] = useState(stateFromUrl.unitsWide || 51);
+  const [squarePattern, setBoolSquarePattern] = useState(Boolean(stateFromUrl.squarePattern));
+  const [numStitchesTall, setNumStitchesTall] = useState(stateFromUrl.unitsTall || 51);
   const [colors, setColors] = useState(
     (stateFromUrl.colorChoices && stateFromUrl.colorChoices.map(s => s.replace('#', ''))) || ["BF5FFF", "2A1DDE"])
   const [stitchCounts, setStitchCounts] = useState(stateFromUrl.numStitchesChoices || [4, 9])
@@ -191,6 +203,8 @@ const Pooler_ = (props) => {
     "colorChoices": colors.map(s => '#' + s),  // add hashes to match old format
     "numStitchesChoices": stitchCounts,
     "unitsWide": numStitches,
+    "squarePattern": squarePattern,
+    "unitsTall": numStitchesTall,
     "type": type
   };
   console.log(state)
@@ -205,9 +219,20 @@ const Pooler_ = (props) => {
 
   return (
     <div id="pooler">
-      <LengthController setStitches={setNumStitches} addStitches={addStitches} numStitches={numStitches}/>
-      <ColorChoosers colors={colors} stitchCounts={stitchCounts} setColors={setColors}
-                     setStitchCounts={setStitchCounts}/>
+      <LengthController 
+        setStitches={setNumStitches} 
+        setStitchesTall={setNumStitchesTall}
+        addStitches={addStitches} 
+        numStitches={numStitches}
+        numStitchesTall={numStitchesTall}
+        squarePattern={squarePattern}
+        setSquarePattern={setBoolSquarePattern}
+        />
+      <ColorChoosers 
+        colors={colors} 
+        stitchCounts={stitchCounts} 
+        setColors={setColors}
+        setStitchCounts={setStitchCounts}/>
       <div>
         <label id="typeLabel">Type of knitting:</label>
         <div id="typeChoicesContainer">
@@ -230,7 +255,9 @@ const Pooler_ = (props) => {
 
       <ColoredSquare
         colors={colors}
-        numStitches={numStitches}
+        numStitchesWide={numStitches}
+        numStitchesTall={numStitchesTall}
+        customizeStitchesTall={!squarePattern}
         stitchCounts={stitchCounts}
         type={type}/>
       <p>

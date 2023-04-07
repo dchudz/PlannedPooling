@@ -36,7 +36,7 @@ function rep(arr, count) {
 //http://stackoverflow.com/questions/6798715/create-a-square-of-colors-with-jquery-or-javascript
 function draw(canvas, state) {
   const unitsWide = state.unitsWide;
-  const unitsTall = unitsWide;
+  const unitsTall = state.unitsTall;
   const totalSize = unitsWide * unitsTall;
 
 
@@ -82,9 +82,11 @@ const ColoredSquare = (props) => {
       nColors: props.colors.length,
       colorChoices: props.colors.map(color => '#' + color),
       numStitchesChoices: props.stitchCounts,
-      unitsWide: props.numStitches,
+      unitsWide: props.numStitchesWide,
+      unitsTall: props.customizeStitchesTall ? props.numStitchesTall : props.numStitchesWide,
       type: props.type
     };
+
     draw(canvasRef.current, state)
 
   });
@@ -94,7 +96,7 @@ const ColoredSquare = (props) => {
     <div className="canvasContainer">
       <p/>
       <div>
-      <canvas id="myCanvas" width={WIDTH} height={WIDTH} ref={canvasRef}>
+      <canvas id="myCanvas" width={WIDTH} height={WIDTH / props.numStitchesWide * (props.customizeStitchesTall ? props.numStitchesTall : props.numStitchesWide)} ref={canvasRef}>
       </canvas>
       </div>
       <div className="save">
