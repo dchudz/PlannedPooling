@@ -31,8 +31,8 @@ const About = (props) => (
     <h1>About</h1>
     <p>
       <h2>What this is:</h2>
-      Sometimes knitters knit with yarn that has a repeating sequence of colors. Depending on the sequence
-      (and how many stitches of each color) and the shape of the object being created (on this site, I'm simulating a square
+      Sometimes knitters knit with yarn that has a repeating sequence of colors. Depending on the sequence of colors
+      (and how many stitches of each) and the shape of the object being created (on this site, I'm simulating a square
       that's a certain number of stitches across), the colors can come out in different patterns. <em>Pooling</em> is
       when colors clump together forming 'pools' of the same color, but many different types of patterns can arise. This
       site should help you explore the possibilities, and perhaps help you plan a desired look.
